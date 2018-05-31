@@ -1,4 +1,4 @@
-import {IReducer, IState, IAction, Selector, Subscription, PropertySelector, IReduceSelector} from './interface';
+import {IAction, IReducer, IReduceSelector, IState, PropertySelector, Selector, Subscription, Unsubscribe} from './interface';
 
 export class Machine {
     private state: IState;
@@ -14,7 +14,9 @@ export class Machine {
     public register(reducer: IReducer) {
         if (reducer) {
             this.reducers.push(reducer);
-        } else throw new Error('Register method require reducer function as parameter');
+        } else {
+          throw new Error('Register method require reducer function as parameter');
+        }
     }
 
     public emit(action: IAction) {
@@ -24,7 +26,7 @@ export class Machine {
             console.log('Failed to reduce new state', err);
         }
 
-        for (let selectorSubscriptionPair of this.subscriptions) {
+        for (const selectorSubscriptionPair of this.subscriptions) {
             const selectors: Selector[] = selectorSubscriptionPair[0] as Selector[];
             const listener: Subscription = selectorSubscriptionPair[1] as Subscription;
 
@@ -36,7 +38,7 @@ export class Machine {
         let slice: IState = this.state;
 
         try {
-            for (let selector of selectors) {
+            for (const selector of selectors) {
                 if (typeof selector === 'string') {
                     slice = slice[selector as PropertySelector];
                 } else if (typeof selector === 'function') {
@@ -50,7 +52,7 @@ export class Machine {
         return slice;
     }
 
-    public on(...selectors: Selector[]):Function {
+    public on(...selectors: Selector[]): Unsubscribe {
         const subscription: Subscription = selectors.pop() as Subscription;
         this.subscriptions.set(selectors, subscription);
         subscription(this.applySelectors(selectors));

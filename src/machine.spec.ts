@@ -1,58 +1,65 @@
-// import {IAction} from './interface';
-// import {Machine} from "./machine";
+import {IState} from './interface';
+import {Machine} from './machine';
 
-// describe('Machine api', function () {
-// 	let machine: Machine;
-//
-// 	beforeEach(function () {
-// 		machine = new Machine();
-// 	});
-//
-// 	test('API methods should be defined on machine instance', () => {
-// 		expect(machine.getState).toBeDefined();
-// 		expect(machine.register).toBeDefined();
-// 		expect(machine.emit).toBeDefined();
-// 		expect(machine.on).toBeDefined();
-// 	});
-// });
+describe('Machine api', () => {
+  let machine: Machine;
 
+  beforeEach(() => {
+    machine = new Machine();
+  });
 
-// describe('Machine behavior', function () {
-// 	let machine: Machine;
-// 	let actions: Action[];
-//
-// 	beforeEach(function () {
-// 		machine = new Machine();
-// 	});
-//
-// 	test('`getState` method should return empty object as state by default', () => {
-// 		expect(machine.getState()).toEqual({});
-// 	});
-//
-// 	test('`on` method should call subscription function on register', () => {
-// 		const subscription = jest.fn();
-// 		machine.on(subscription);
-// 		expect(subscription).toBeCalledWith({});
-// 	});
-//
-// 	test('`on` method should return unsubscribe function', () => {
-// 		const unsubscribe = machine.on(() => ({}));
-// 		expect(unsubscribe).toBeInstanceOf(Function);
-// 	});
-//
-// 	test('unsubscribe function should remove subscription from subscriptions list', () => {
-// 		const unsubscribe = machine.on(() => ({}));
-// 		unsubscribe();
-// 		expect(machine.subscriptions.size).toEqual(0);
-// 	});
-//
-// 	test('`register` method should add reducer to reducers list', () => {
-// 		const reducer = jest.fn();
-// 		machine.register(reducer);
-//
-// 		expect(machine.reducers).toContain(reducer);
-// 	});
-// });
+  it('API methods should be defined on machine instance', () => {
+    expect(machine.getState).toBeDefined();
+    expect(machine.register).toBeDefined();
+    expect(machine.emit).toBeDefined();
+    expect(machine.on).toBeDefined();
+  });
+});
+
+describe('Machine behavior', () => {
+  let machine: Machine;
+  // let actions: Action[];
+
+  beforeEach(() => {
+    machine = new Machine();
+  });
+
+  it('`getState` method should return empty object as state by default', () => {
+    expect(machine.getState()).toEqual({});
+  });
+
+  it('`on` method should call subscription function on register', () => {
+    // const subscription = jest.fn();
+    // machine.on(subscription);
+    // expect(subscription).toBeCalledWith({});
+  });
+
+  it('`on` method should return unsubscribe function', () => {
+    // const unsubscribe = machine.on(() => ({}));
+    // expect(unsubscribe).toBeInstanceOf(Function);
+  });
+
+  it('unsubscribe function should remove subscription from subscriptions list', () => {
+    const unsubscribe = machine.on(() => ({}));
+    unsubscribe();
+    expect(machine.subscriptions.size).toEqual(0);
+  });
+
+  it('`register` method should add reducer to reducers list', () => {
+    // const reducer = jest.fn();
+    // machine.register(reducer);
+    //
+    // expect(machine.reducers).toContain(reducer);
+  });
+});
+
+class TestData {
+  getInitState(): IState {
+    return {
+      users
+    }
+  }
+}
 
 // describe('Machine state management', function () {
 // 	let machine: Machine;
@@ -115,7 +122,6 @@
 // 	})
 //
 // });
-
 
 // describe('Greeter', () => {
 //

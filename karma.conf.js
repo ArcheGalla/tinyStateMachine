@@ -1,4 +1,7 @@
-let webpackConfig = require('./webpack.config')();
+const webpackConfig = require('./webpack.config')();
+const puppeteer = require('puppeteer');
+process.env.CHROME_BIN = puppeteer.executablePath();
+
 webpackConfig.module.rules.push({
   test: /\.ts$/,
   loader: 'istanbul-instrumenter-loader',
@@ -11,12 +14,12 @@ module.exports = function (config) {
     frameworks: ['jasmine'],
     plugins: [
       require('karma-jasmine'),
-      require('karma-phantomjs-launcher'),
+      require('karma-chrome-launcher'),
       require('karma-coverage-istanbul-reporter'),
       require('karma-webpack')
     ],
     files: [
-      { pattern: './src/**/*.spec.ts', watched: false }
+      { pattern: './src/*.spec.ts', watched: false }
     ],
     preprocessors: {
       './src/**/*.ts': ['webpack']
@@ -44,7 +47,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['PhantomJS'],
+    browsers: ['ChromeHeadless'],
     singleRun: false
   });
 };
