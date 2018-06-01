@@ -1,5 +1,6 @@
 import {Machine} from './machine';
 import createSpy = jasmine.createSpy;
+import {Actions, AppState, Contact, contactReducer, Entities, User, userReducer} from './machine.test.data';
 
 describe('Machine API', () => {
   let machine: Machine;
@@ -69,4 +70,68 @@ describe('Machine default behavior', () => {
     expect(reducer).toHaveBeenCalledTimes(1);
     expect(subscription).toHaveBeenCalledTimes(2);
   });
+});
+
+describe('Machine state management', () => {
+  let machine: Machine;
+  let actions: Actions;
+  let entities: Entities;
+
+  beforeEach(() => {
+    machine = new Machine(new AppState());
+    actions = new Actions();
+    entities = new Entities();
+
+    machine.register(contactReducer);
+    machine.register(userReducer);
+  });
+
+  it('should add user to users list', () => {
+    const type = actions.addUser;
+    const payload = entities.generateUser();
+
+    machine.emit(actions.create(type, payload));
+    const {users} = machine.getState();
+
+    expect(users.length).toEqual(1);
+  });
+
+  it('should remove user from users list', () => {
+    const user = entities.generateUser();
+
+    machine.emit(actions.create(actions.addUser, user));
+    machine.emit(actions.create(actions.removeUser, user.id));
+
+    const {users} = machine.getState();
+    expect(users.length).toEqual(0);
+  });
+
+});
+
+describe('Machine selectors', () => {
+  let machine: Machine;
+  let actions: Actions;
+  let entities: Entities;
+  let users: User[];
+  let contacts: Contact[];
+
+  beforeEach(() => {
+    entities = new Entities();
+    users = [1, 2, 3, 4].map(() => entities.generateUser());
+    contacts = [1, 2, 3, 4].map((position) => entities.generateContact(users[position].id));
+    machine = new Machine(new AppState());
+    actions = new Actions();
+  });
+
+  // it('should select users list from state by string selector', () => {
+  //
+  // });
+
+  // it('should select users list from state by function selector', () => {
+  //
+  // });
+
+  // it('should select users with the same age by string and function selector', () => {
+  //
+  // });
 });
