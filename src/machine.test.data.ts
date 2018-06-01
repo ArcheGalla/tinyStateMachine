@@ -8,54 +8,35 @@ interface IUser {
   id: number;
 }
 
-interface IConstant {
+interface IContact {
   phone: string;
   address: string;
   userId: number;
   id: number;
 }
 
-export class Action {
-  static create(type:string, payload:any) : IAction{
-    return { type, payload };
-  }
-
+interface IAppState extends IState {
+  contacts: IContact[];
+  users: IUser[];
 }
 
-export class Reducers {
-  getInitState(): IState {
-    return {
-      users: [],
-    };
+export class Actions {
+  static create(type: string, payload?: any): IAction {
+    return {type, payload};
   }
+}
 
-  getUserReducer() {
+export const appState: IAppState = {
+  contacts: [],
+  users: [],
+};
 
-  }
+export function userReducer(state: IAppState, action: IAction): IAppState {
+  // todo implement me
+  return state;
+}
 
-  getAddUserAction() {
-
-  }
-
-  getRemoveUserAction() {
-  }
-
-  getUpdateUserAction() {
-  }
-
-  getConstactReducer() {
-  }
-
-  getAddConstactAction() {
-
-  }
-
-  getRemoveConstactAction() {
-
-  }
-
-  getUpdateConstactAction() {
-
-  }
-
+export function contactReducer(state: IAppState, action: IAction): IAppState {
+  // todo implement me
+  return state;
 }
