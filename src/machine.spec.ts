@@ -2,6 +2,11 @@ import {Machine} from './machine';
 import createSpy = jasmine.createSpy;
 import {Actions, AppState, Contact, contactReducer, Entities, User, userReducer} from './machine.test.data';
 
+// fdescribe('Flet map', () => {
+//   const source = [[1], [23]];
+//   console.log(source.flatMap())
+// });
+
 describe('Machine API', () => {
   let machine: Machine;
 

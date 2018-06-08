@@ -1,6 +1,4 @@
-export interface IState {
-    [key: string]: any;
-}
+export interface IState { }
 
 export interface IAction {
     type: string;
