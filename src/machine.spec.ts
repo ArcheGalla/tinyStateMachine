@@ -1,11 +1,7 @@
 import {Machine} from './machine';
 import createSpy = jasmine.createSpy;
+import {Selector} from './interface';
 import {Actions, AppState, Contact, contactReducer, Entities, User, userReducer} from './machine.test.data';
-
-// fdescribe('Flet map', () => {
-//   const source = [[1], [23]];
-//   console.log(source.flatMap())
-// });
 
 describe('Machine API', () => {
   let machine: Machine;
@@ -123,20 +119,50 @@ describe('Machine selectors', () => {
   beforeEach(() => {
     entities = new Entities();
     users = [1, 2, 3, 4].map(() => entities.generateUser());
-    contacts = [1, 2, 3, 4].map((position) => entities.generateContact(users[position].id));
-    machine = new Machine(new AppState());
+    contacts = users.map((user) => entities.generateContact(user.id));
+    machine = new Machine(new AppState(users, contacts));
     actions = new Actions();
   });
 
-  // it('should select users list from state by string selector', () => {
-  //
-  // });
+  it('should select `users` list from state by string selector with `getState` method', () => {
+    const usersFromState: User[] = machine.getState('users') as User[];
 
-  // it('should select users list from state by function selector', () => {
-  //
-  // });
+    expect(JSON.stringify(usersFromState)).toEqual(JSON.stringify(users));
+  });
 
-  // it('should select users with the same age by string and function selector', () => {
-  //
-  // });
+  it('should select `users` list from state by function selector with `getState` method', () => {
+    const usersFromState: User[] = machine.getState((state: AppState) => state.users) as User[];
+
+    expect(JSON.stringify(usersFromState)).toEqual(JSON.stringify(users));
+  });
+
+  it('should select `users` list from state by array string selector with `getState` method', () => {
+    const usersFromState: User[] = machine.getState(['users']) as User[];
+
+    expect(JSON.stringify(usersFromState)).toEqual(JSON.stringify(users));
+  });
+
+  it('should select users list from state by `on` method', (done) => {
+    machine.on('users', (list: User[]) => {
+      console.log('users list', list);
+      expect(JSON.stringify(list)).toEqual(JSON.stringify(users));
+      done();
+    });
+  });
+
+  it('should select users list and transform state with `on` method', (done) => {
+    machine.on('users', (userList: User[]) => userList.map((user: User) => user.id), (idList: string[]) => {
+      expect(idList.every((id: string) => typeof id === 'string')).toEqual(true);
+      done();
+    });
+  });
+
+  it('should select users list and transform state with `on` method', (done) => {
+    const userIdSelector: Selector[] = ['users', (userList: User[]) => userList.map((user: User) => user.id)];
+
+    machine.on(userIdSelector, (idList: string[]) => {
+      expect(idList.every((id: string) => typeof id === 'string')).toEqual(true);
+      done();
+    });
+  });
 });
