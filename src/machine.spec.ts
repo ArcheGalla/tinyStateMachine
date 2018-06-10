@@ -59,6 +59,14 @@ describe('Machine default behavior', () => {
     expect(machine.reducers).toContain(reducer);
   });
 
+  it('`register` method should return remove reducer call back', () => {
+    const reducer = () => ({});
+    const removeReducer: () => void = machine.register(reducer);
+    expect(machine.reducers).toContain(reducer);
+    removeReducer();
+    expect(machine.reducers.length).toEqual(0);
+  });
+
   it('`emit` method should call reducer and subscription', () => {
     const reducer = createSpy('reducer', (state) => state).and.callThrough();
     const subscription = createSpy('subscription', () => ({}));

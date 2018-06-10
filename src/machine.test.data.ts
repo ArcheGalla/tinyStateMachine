@@ -79,7 +79,7 @@ export class Entities {
 
 export class AppState implements IAppState {
   contacts: Contact[];
-  users: User[];
+  users: User[] | string;
 
   constructor(users: User[] = [], contacts: Contact[] = []) {
     this.contacts = contacts;

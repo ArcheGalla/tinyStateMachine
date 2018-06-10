@@ -1,8 +1,8 @@
 import {IAction, IReducer, IReduceSelector, IState, PropertySelector, Selector, Subscription, Unsubscribe} from './interface';
 
 export class Machine {
+  reducers: IReducer[];
   private state: IState;
-  readonly reducers: IReducer[];
   readonly subscriptions: Map<Selector[], Subscription>;
 
   private static flatSelectors(selectors: Selector []): Selector[] {
@@ -39,6 +39,9 @@ export class Machine {
     } else {
       throw new Error('Register method require reducer function as parameter');
     }
+    return () => {
+      this.reducers = this.reducers.filter((red) => red !== reducer);
+    };
   }
 
   public emit(action: IAction) {
