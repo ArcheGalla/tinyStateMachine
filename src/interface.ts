@@ -1,20 +1,18 @@
-export interface IState { }
-
 export interface IAction {
     type: string;
     payload?: any;
 }
 
-export type IReducer = (state: IState, action: IAction) => IState;
-
-export type Subscription = (l: any) => void;
+export type IReducer = <T>(state: T, action: IAction) =>  T;
 
 export type Unsubscribe = () => void;
 
-export type IReduceSelector = (state: IState) => IState;
-
-export type IArraySelector = [Selector];
-
 export type PropertySelector = string;
 
-export type Selector = PropertySelector | IReduceSelector | IArraySelector | Subscription;
+export type Subscription =  <T>(state: T) => void;
+
+export type IReduceSelector = <T, U>(state: T) => U;
+
+export type IArraySelector = [PropertySelector | IReduceSelector];
+
+export type Selector = PropertySelector | Subscription | IReduceSelector | IArraySelector;

@@ -4,7 +4,7 @@ import {Selector} from './interface';
 import {Actions, AppState, Contact, contactReducer, Entities, User, userReducer} from './machine.test.data';
 
 describe('Machine API', () => {
-  let machine: Machine;
+  let machine: Machine<{}>;
 
   beforeEach(() => {
     machine = new Machine();
@@ -19,7 +19,7 @@ describe('Machine API', () => {
 });
 
 describe('Machine default behavior', () => {
-  let machine: Machine;
+  let machine: Machine<{}>;
 
   beforeEach(() => {
     machine = new Machine();
@@ -82,7 +82,7 @@ describe('Machine default behavior', () => {
 });
 
 describe('Machine state management', () => {
-  let machine: Machine;
+  let machine: Machine<{}>;
   let actions: Actions;
   let entities: Entities;
 

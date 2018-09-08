@@ -1,5 +1,5 @@
 import * as faker from 'faker';
-import {IAction, IState} from './interface';
+import {IAction} from './interface';
 
 interface IUser {
   surname: string;
@@ -15,9 +15,9 @@ interface IContact {
   id: string;
 }
 
-interface IAppState extends IState {
+interface IAppState {
   contacts: IContact[];
-  users: IUser[];
+  users: User[];
 }
 
 export class Actions {
@@ -31,16 +31,11 @@ export class Actions {
 }
 
 export class Contact implements IContact {
-  phone: string;
-  address: string;
-  userId: string;
-  id: string;
-
-  constructor(phone: string, address: string, userId: string, id: string) {
-    this.phone = phone;
-    this.address = address;
-    this.userId = userId;
-    this.id = id;
+  constructor(
+    public id: string,
+    public phone: string,
+    public address: string,
+    public userId: string) {
   }
 }
 
@@ -77,9 +72,9 @@ export class Entities {
   }
 }
 
-export class AppState implements IAppState {
+export class AppState {
   contacts: Contact[];
-  users: User[] | string;
+  users: User[];
 
   constructor(users: User[] = [], contacts: Contact[] = []) {
     this.contacts = contacts;
@@ -89,7 +84,7 @@ export class AppState implements IAppState {
 
 const rAction = new Actions();
 
-export function userReducer(state: IAppState, action: IAction): IAppState {
+export function userReducer(state: AppState, action: IAction): AppState {
   switch (action.type) {
     case rAction.addUser: {
       state.users.push(action.payload as User);
@@ -107,10 +102,11 @@ export function userReducer(state: IAppState, action: IAction): IAppState {
   }
 }
 
-export function contactReducer(state: IAppState, action: IAction): IAppState {
+export function contactReducer(state: AppState, action: IAction): AppState {
   switch (action.type) {
     case rAction.addContact: {
-      return {...state, contacts: state.contacts.push(action.payload)};
+      state.contacts.push(action.payload);
+      return {...state};
     }
 
     default: {

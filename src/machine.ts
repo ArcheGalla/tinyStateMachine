@@ -1,33 +1,33 @@
-import {IAction, IReducer, IReduceSelector, IState, PropertySelector, Selector, Subscription, Unsubscribe} from './interface';
+import {IAction, IReducer, IReduceSelector, PropertySelector, Selector, Subscription, Unsubscribe} from './interface';
 
-export class Machine {
-  reducers: IReducer[];
-  private state: IState;
+export class Machine<T> {
+  private state: T;
+  private reducers: IReducer[];
   readonly subscriptions: Map<Selector[], Subscription>;
 
-  private static flatSelectors(selectors: Selector []): Selector[] {
+  private flatSelectors(selectors: Selector []): Selector[] {
     return selectors.reduce((acc: [Selector], selector: Selector) => acc.concat(selector), []) as Selector[];
   }
 
-  private static applySelectors(selectors: Selector[], state: IState ): IState {
-    let slice: IState = state;
+  private applySelectors(selectors: Selector[], state: T): T {
+    let slice: { [key: string]: any } = state;
 
     try {
       for (const selector of selectors) {
         if (typeof selector === 'string') {
           slice = slice[selector as PropertySelector];
         } else if (typeof selector === 'function') {
-          slice = selector(slice as IReduceSelector);
+          slice = (selector as IReduceSelector)(slice);
         }
       }
     } catch (err) {
       console.log('Failed to apply selector ', err);
     }
 
-    return slice;
+    return slice as T;
   }
 
-  constructor(state: IState = {}) {
+  constructor(state: T = {} as T) {
     this.state = state;
     this.reducers = [];
     this.subscriptions = new Map();
@@ -55,22 +55,22 @@ export class Machine {
       const selectors: Selector[] = selectorSubscriptionPair[0] as Selector[];
       const listener: Subscription = selectorSubscriptionPair[1] as Subscription;
 
-      listener(Machine.applySelectors(selectors, this.state));
+      listener(this.applySelectors(selectors, this.state));
     }
   }
 
-  public on(...selectors: Selector[] ): Unsubscribe {
-    const flattenSelectors: Selector[] = Machine.flatSelectors(selectors);
+  public on(...selectors: Selector[]): Unsubscribe {
+    const flattenSelectors: Selector[] = this.flatSelectors(selectors);
 
     const subscription: Subscription = flattenSelectors.pop() as Subscription;
 
     this.subscriptions.set(flattenSelectors, subscription);
-    subscription(Machine.applySelectors(flattenSelectors, this.state));
+    subscription(this.applySelectors(flattenSelectors, this.state));
 
     return () => this.subscriptions.delete(flattenSelectors);
   }
 
   public getState(...selectors: Selector[]) {
-    return Machine.applySelectors(Machine.flatSelectors(selectors), this.state);
+    return this.applySelectors(this.flatSelectors(selectors), this.state);
   }
 }
